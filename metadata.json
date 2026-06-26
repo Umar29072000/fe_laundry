@@ -1,0 +1,6 @@
+{
+  "name": "Clean Laundry",
+  "description": "Sistem Manajemen Laundry Terlengkap",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
