@@ -9,7 +9,7 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://api.liveonline.codes';
 
 export async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
-  const token = localStorage.getItem('auth_token');
+  const token = sessionStorage.getItem('auth_token');
 
   const isFormData = options.body instanceof FormData;
 

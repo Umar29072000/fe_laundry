@@ -18,11 +18,11 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
- const token = localStorage.getItem('auth_token');
- if (!token) {
- return <Navigate to="/login" replace />;
- }
- return <>{children}</>;
+  const token = sessionStorage.getItem('auth_token');
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
 };
 
 export default function App() {

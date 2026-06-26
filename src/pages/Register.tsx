@@ -28,8 +28,8 @@ export default function Register() {
       const data = await res.json();
 
       if (data.status === 'success') {
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('tenant', JSON.stringify(data.data.tenant));
+        sessionStorage.setItem('auth_token', data.token);
+        sessionStorage.setItem('tenant', JSON.stringify(data.data.tenant));
         navigate('/');
       } else {
         setError(data.message || 'Registrasi gagal');

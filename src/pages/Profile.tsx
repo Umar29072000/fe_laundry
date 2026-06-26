@@ -78,8 +78,8 @@ export default function Profile() {
       if (data.status === 'success' && data.data?.tenant) {
         const updated: Tenant = data.data.tenant;
         setTenant(updated);
-        // Sync localStorage
-        localStorage.setItem('tenant', JSON.stringify(updated));
+        // Sync sessionStorage
+        sessionStorage.setItem('tenant', JSON.stringify(updated));
         window.dispatchEvent(new Event('storage'));
         setMessage({ type: 'success', text: 'Foto profil berhasil diperbarui!' });
       } else {
@@ -110,7 +110,7 @@ export default function Profile() {
       if (data.status === 'success') {
         const updated: Tenant = data.data.tenant;
         setTenant(updated);
-        localStorage.setItem('tenant', JSON.stringify(updated));
+        sessionStorage.setItem('tenant', JSON.stringify(updated));
         window.dispatchEvent(new Event('storage'));
         setMessage({ type: 'success', text: 'Profil toko berhasil diperbarui!' });
       } else {

@@ -14,7 +14,7 @@ export default function Layout() {
   useEffect(() => {
     const loadTenant = () => {
       try {
-        const t = JSON.parse(localStorage.getItem('tenant') || '{}');
+        const t = JSON.parse(sessionStorage.getItem('tenant') || '{}');
         if (t && (t.storeName || t.ownerName)) {
           setTenant(t);
         }
@@ -26,8 +26,8 @@ export default function Layout() {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('tenant');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('tenant');
     navigate('/login');
   };
 

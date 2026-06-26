@@ -23,8 +23,8 @@ export default function Dashboard() {
 
       // Handle 401 — token expired or missing
       if (response.status === 401) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('tenant');
+        sessionStorage.removeItem('auth_token');
+        sessionStorage.removeItem('tenant');
         navigate('/login');
         return;
       }
