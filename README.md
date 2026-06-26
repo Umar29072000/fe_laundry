@@ -1,4 +1,4 @@
-# 🧺 Laundry-ku — Aplikasi Kasir & Manajemen Laundry Modern
+# 🧺 LaundryKu — Aplikasi Kasir & Manajemen Laundry Modern
 
 <div align="center">
   <img src="./assets/laundry_dashboard_banner.png" alt="Laundry-ku Dashboard Banner" width="100%" style="border-radius: 8px; margin-bottom: 20px;" />
@@ -14,9 +14,6 @@
 
 **Laundry-ku** adalah aplikasi kasir (POS) dan manajemen operasional laundry modern berbasis web. Dirancang khusus untuk membantu pemilik toko laundry (tenant) mengelola data transaksi, pelanggan, katalog jasa laundry, status pengerjaan pakaian secara real-time, hingga visualisasi laporan keuangan harian dan bulanan secara interaktif.
 
-Frontend ini terintegrasi penuh ke backend API **be_laundry** pada:
-- **Base URL (Production):** `https://api.liveonline.codes`
-- **Base URL (Development):** `http://localhost:3000`
 
 ---
 
