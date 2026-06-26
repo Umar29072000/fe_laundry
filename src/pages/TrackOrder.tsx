@@ -19,7 +19,7 @@ export default function TrackOrder() {
         const res = await apiFetch(`/api/orders/track/${orderId}`);
         const data = await res.json();
         if (data.status === 'success' && data.data) {
-          setOrder(data.data);
+          setOrder(data.data.order || data.data);
         } else {
           setError(data.message || 'Pesanan tidak ditemukan');
         }

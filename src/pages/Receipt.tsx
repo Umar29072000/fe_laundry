@@ -10,6 +10,8 @@ import { apiFetch } from '../lib/api';
 export default function Receipt() {
   const { orderId } = useParams<{ orderId: string }>();
   const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -18,10 +20,15 @@ export default function Receipt() {
         const res = await apiFetch(`/api/orders/track/${orderId}`);
         const data = await res.json();
         if (data.status === 'success' && data.data) {
-          setOrder(data.data);
+          setOrder(data.data.order || data.data);
+        } else {
+          setError(data.message || 'Pesanan tidak ditemukan');
         }
       } catch (err) {
         console.error(err);
+        setError('Terjadi kesalahan koneksi jaringan');
+      } finally {
+        setLoading(false);
       }
     };
     if (orderId) fetchOrder();
@@ -37,10 +44,24 @@ export default function Receipt() {
     return labels[method] || method;
   };
 
-  if (!order) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600" />
+      </div>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
+        <div className="bg-white p-8 rounded-3xl shadow-2xl border border-red-200 text-center max-w-md w-full">
+          <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl font-bold">!</span>
+          </div>
+          <h2 className="text-xl font-bold text-slate-800 mb-3">Gagal Memuat Struk</h2>
+          <p className="text-slate-500 font-medium">{error || 'Struk belanja tidak ditemukan'}</p>
+        </div>
       </div>
     );
   }
