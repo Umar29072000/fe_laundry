@@ -67,7 +67,7 @@ Pastikan komputer Anda sudah menginstal:
 4. **Buat & Konfigurasi Environment Variables:**
    Buat sebuah file baru bernama `.env` di root direktori project, lalu isi dengan endpoint backend:
    ```env
-   VITE_API_URL=https://api.liveonline.codes
+   VITE_API_URL=[ISI_URL_API_ANDA]
    ```
 5. **Jalankan server development lokal:**
    ```bash
