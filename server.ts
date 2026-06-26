@@ -4,7 +4,11 @@ import { createServer as createViteServer } from 'vite';
 import { store } from './src/server/store';
 import { sendSuccess, sendError } from './src/server/response';
 import { sendOrderBillEmail } from './src/server/email';
-import { Order, PaymentMethod, StoreUser } from './src/types';
+// Local types for the mock server — decoupled from src/types.ts
+interface StoreUser { id: string; storeName: string; ownerName: string; username: string; password: string; photoUrl?: string; }
+type PaymentMethod = 'Tunai' | 'QRIS' | 'Transfer_Bank';
+type OrderStatus = 'Pending' | 'Washing' | 'Ironing' | 'Ready' | 'Delivered';
+interface Order { id: string; storeId: string; customerId: string; items: any[]; totalPrice: number; status: OrderStatus; paymentMethod: PaymentMethod; createdAt: string; completedAt?: string; }
 
 async function startServer() {
   const app = express();
@@ -132,45 +136,36 @@ async function startServer() {
   // Reports
   app.get('/api/reports', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
-    const storeOrders = store.orders.filter(o => o.storeId === storeId || (!o.storeId && storeId === 'store_admin'));
-    const completedOrders = storeOrders.filter(o => o.status === 'Delivered' || o.status === 'Completed');
-    
-    let totalRevenue = 0;
-    let revenueTunai = 0;
-    let revenueQris = 0;
-    let revenueTransfer = 0;
+    const storeOrders = store.orders.filter((o: any) => o.storeId === storeId || (!o.storeId && storeId === 'store_admin'));
+    const completedOrders = storeOrders.filter((o: any) => o.status === 'Delivered');
 
-    completedOrders.forEach(order => {
-      totalRevenue += order.totalPrice;
-      if (order.paymentMethod === 'Tunai') revenueTunai += order.totalPrice;
-      else if (order.paymentMethod === 'QRIS') revenueQris += order.totalPrice;
-      else if (order.paymentMethod === 'Transfer Bank') revenueTransfer += order.totalPrice;
+    const grouped: Record<string, { totalRevenue: number; orderCount: number }> = {};
+    completedOrders.forEach((order: any) => {
+      const pm = order.paymentMethod;
+      if (!grouped[pm]) grouped[pm] = { totalRevenue: 0, orderCount: 0 };
+      grouped[pm].totalRevenue += order.totalPrice;
+      grouped[pm].orderCount += 1;
     });
 
-    return sendSuccess(res, 'Berhasil mengambil data laporan', {
-      totalRevenue,
-      revenueTunai,
-      revenueQris,
-      revenueTransfer,
-      completedOrdersCount: completedOrders.length
-    });
+    const report = Object.entries(grouped).map(([paymentMethod, stats]) => ({ paymentMethod, ...stats }));
+    return sendSuccess(res, 'Berhasil mengambil data laporan', { report });
   });
 
   // Dashboard Stats
   app.get('/api/dashboard', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
-    const storeCustomers = store.customers.filter(c => c.storeId === storeId || (!c.storeId && storeId === 'store_admin'));
-    const storeOrders = store.orders.filter(o => o.storeId === storeId || (!o.storeId && storeId === 'store_admin'));
+    const storeCustomers = store.customers.filter((c: any) => c.storeId === storeId || (!c.storeId && storeId === 'store_admin'));
+    const storeOrders = store.orders.filter((o: any) => o.storeId === storeId || (!o.storeId && storeId === 'store_admin'));
 
     const totalCustomers = storeCustomers.length;
     const totalOrders = storeOrders.length;
-    const pendingOrders = storeOrders.filter(o => o.status !== 'Delivered' && o.status !== 'Completed').length;
-    const totalRevenue = storeOrders.filter(o => o.status === 'Delivered' || o.status === 'Completed').reduce((sum, order) => sum + order.totalPrice, 0);
+    const pendingOrdersCount = storeOrders.filter((o: any) => o.status !== 'Delivered').length;
+    const totalRevenue = storeOrders.filter((o: any) => o.status === 'Delivered').reduce((sum: number, order: any) => sum + order.totalPrice, 0);
 
     return sendSuccess(res, 'Berhasil mengambil data dashboard', {
       totalCustomers,
       totalOrders,
-      pendingOrders,
+      pendingOrdersCount,
       totalRevenue,
     });
   });
@@ -178,8 +173,8 @@ async function startServer() {
   // Customers
   app.get('/api/customers', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
-    const storeCustomers = store.customers.filter(c => c.storeId === storeId || (!c.storeId && storeId === 'store_admin'));
-    return sendSuccess(res, 'Berhasil mengambil data pelanggan', storeCustomers);
+    const storeCustomers = store.customers.filter((c: any) => c.storeId === storeId || (!c.storeId && storeId === 'store_admin'));
+    return sendSuccess(res, 'Berhasil mengambil data pelanggan', { customers: storeCustomers });
   });
   app.post('/api/customers', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
@@ -197,8 +192,8 @@ async function startServer() {
   // Services
   app.get('/api/services', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
-    const storeServices = store.services.filter(s => s.storeId === storeId || (!s.storeId && storeId === 'store_admin'));
-    return sendSuccess(res, 'Berhasil mengambil data layanan', storeServices);
+    const storeServices = store.services.filter((s: any) => s.storeId === storeId || (!s.storeId && storeId === 'store_admin'));
+    return sendSuccess(res, 'Berhasil mengambil data layanan', { services: storeServices });
   });
   app.post('/api/services', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
@@ -215,30 +210,35 @@ async function startServer() {
 
   // Orders
   app.get('/api/orders/track/:id', (req: Request, res: Response) => {
-    const order = store.orders.find(o => o.id === req.params.id);
+    const order = store.orders.find((o: any) => o.id === req.params.id);
     if (!order) return sendError(res, 'Pesanan tidak ditemukan', 404);
 
-    const customer = store.customers.find(c => c.id === order.customerId);
-    
+    const customer = store.customers.find((c: any) => c.id === order.customerId);
+    const orderItems = (order.items || []).map((item: any) => {
+      const svc = store.services.find((s: any) => s.id === item.serviceId);
+      return { id: item.serviceId, quantity: item.quantity, subtotal: item.subtotal, service: svc || null };
+    });
     return sendSuccess(res, 'Berhasil mengambil data tracking', {
       ...order,
-      customer: customer ? { name: customer.name, phone: customer.phone } : null,
-      services: store.services
+      customer: customer ? { id: customer.id, name: customer.name, phone: customer.phone } : null,
+      orderItems,
     });
   });
 
   app.get('/api/orders', (req: Request, res: Response) => {
     const storeId = getStoreId(req);
-    const storeOrders = store.orders.filter(o => o.storeId === storeId || (!o.storeId && storeId === 'store_admin'));
+    const storeOrders = store.orders.filter((o: any) => o.storeId === storeId || (!o.storeId && storeId === 'store_admin'));
 
-    // Join with customer details for frontend convenience
-    const ordersWithCustomer = storeOrders.map(order => ({
-      ...order,
-      customer: store.customers.find(c => c.id === order.customerId)
-    }));
-    // Sort descending by date
-    ordersWithCustomer.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    return sendSuccess(res, 'Berhasil mengambil data pesanan', ordersWithCustomer);
+    const ordersWithDetails = storeOrders.map((order: any) => {
+      const customer = store.customers.find((c: any) => c.id === order.customerId);
+      const orderItems = (order.items || []).map((item: any) => {
+        const svc = store.services.find((s: any) => s.id === item.serviceId);
+        return { id: item.serviceId, quantity: item.quantity, subtotal: item.subtotal, service: svc || null };
+      });
+      return { ...order, customer: customer || null, orderItems };
+    });
+    ordersWithDetails.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return sendSuccess(res, 'Berhasil mengambil data pesanan', { orders: ordersWithDetails });
   });
 
   app.post('/api/orders', (req: Request, res: Response) => {
@@ -250,14 +250,14 @@ async function startServer() {
 
     let totalPrice = 0;
     const validatedItems = items.map((item: any) => {
-      const service = store.services.find(s => s.id === item.serviceId);
+      const service = store.services.find((s: any) => s.id === item.serviceId);
       if (!service) throw new Error('Layanan tidak ditemukan');
       const subtotal = service.price * item.quantity;
       totalPrice += subtotal;
       return { serviceId: item.serviceId, quantity: item.quantity, subtotal };
     });
 
-    const newOrder: Order = {
+    const newOrder: any = {
       id: `ORD-${Date.now().toString().slice(-4)}`,
       storeId,
       customerId,
@@ -267,28 +267,32 @@ async function startServer() {
       paymentMethod,
       createdAt: new Date().toISOString()
     };
-    
+
     store.orders.push(newOrder);
 
     // Notifications
-    const customer = store.customers.find(c => c.id === customerId);
+    const customer = store.customers.find((c: any) => c.id === customerId);
     if (customer && customer.email) {
       sendOrderBillEmail(customer.name, customer.email, newOrder, store.services);
     }
 
-    return sendSuccess(res, 'Pesanan berhasil dibuat', newOrder);
+    // Build response with nested orderItems shape
+    const orderItems = validatedItems.map((item: any) => {
+      const svc = store.services.find((s: any) => s.id === item.serviceId);
+      return { id: item.serviceId, quantity: item.quantity, subtotal: item.subtotal, service: svc || null };
+    });
+    return sendSuccess(res, 'Pesanan berhasil dibuat', { ...newOrder, customer: customer || null, orderItems });
   });
 
   app.put('/api/orders/:id/status', (req: Request, res: Response) => {
     const { status } = req.body;
-    const order = store.orders.find(o => o.id === req.params.id);
+    const order = store.orders.find((o: any) => o.id === req.params.id);
     if (!order) return sendError(res, 'Pesanan tidak ditemukan', 404);
-    
-    order.status = status;
-    if (status === 'Delivered') {
-      order.completedAt = new Date().toISOString();
-    }
 
+    (order as any).status = status;
+    if (status === 'Delivered') {
+      (order as any).completedAt = new Date().toISOString();
+    }
     return sendSuccess(res, 'Status pesanan berhasil diupdate', order);
   });
 

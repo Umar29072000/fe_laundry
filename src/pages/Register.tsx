@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { WashingMachine, Lock, User, Store, ArrowRight } from 'lucide-react';
+import { WashingMachine, Lock, Mail, User, Store, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
 
 export default function Register() {
   const [storeName, setStoreName] = useState('');
   const [ownerName, setOwnerName] = useState('');
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,20 +21,20 @@ export default function Register() {
     setError('');
 
     try {
-      const res = await apiFetch('/api/register', {
+      const res = await apiFetch('/api/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ storeName, ownerName, username, password })
+        body: JSON.stringify({ storeName, ownerName, email, password, phone, address }),
       });
       const data = await res.json();
 
-      if (data.success) {
-        localStorage.setItem('auth_token', data.data.token);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
+      if (data.status === 'success') {
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('tenant', JSON.stringify(data.data.tenant));
         navigate('/');
       } else {
         setError(data.message || 'Registrasi gagal');
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan koneksi ke server');
     } finally {
       setLoading(false);
@@ -52,7 +54,7 @@ export default function Register() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+        className="sm:mx-auto sm:w-full sm:max-w-lg relative z-10"
       >
         <div className="w-16 h-16 bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-indigo-500/20 text-white mb-6">
           <WashingMachine size={32} />
@@ -61,7 +63,7 @@ export default function Register() {
           Daftar Mitra Laundry
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Kelola bisnis laundry UMKM Anda dengan mudah & praktis
+          Kelola bisnis laundry UMKM Anda dengan mudah &amp; praktis
         </p>
       </motion.div>
 
@@ -69,7 +71,7 @@ export default function Register() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+        className="mt-8 sm:mx-auto sm:w-full sm:max-w-lg relative z-10"
       >
         <div className="bg-white/90 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-white">
           {error && (
@@ -79,6 +81,7 @@ export default function Register() {
           )}
 
           <form className="space-y-5" onSubmit={handleRegister}>
+            {/* Store Name */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">
                 Nama Toko Laundry
@@ -90,6 +93,7 @@ export default function Register() {
                 <input
                   type="text"
                   required
+                  minLength={3}
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                   placeholder="Contoh: Berkah Laundry Bersih"
@@ -98,6 +102,7 @@ export default function Register() {
               </div>
             </div>
 
+            {/* Owner Name */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">
                 Nama Pemilik
@@ -117,25 +122,67 @@ export default function Register() {
               </div>
             </div>
 
+            {/* Email */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">
-                Username
+                Email
               </label>
               <div className="relative rounded-2xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  <User size={18} />
+                  <Mail size={18} />
                 </div>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Username untuk login"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="budi@email.com"
                   className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
+            {/* Phone */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Nomor Telepon
+              </label>
+              <div className="relative rounded-2xl shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <Phone size={18} />
+                </div>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="081234567890"
+                  className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Address */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Alamat Toko
+              </label>
+              <div className="relative rounded-2xl shadow-sm">
+                <div className="absolute top-3.5 left-0 pl-4 flex items-start pointer-events-none text-slate-400">
+                  <MapPin size={18} />
+                </div>
+                <textarea
+                  required
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Jl. Merdeka No. 1, Kota..."
+                  rows={2}
+                  className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">
                 Password
@@ -147,6 +194,7 @@ export default function Register() {
                 <input
                   type="password"
                   required
+                  minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 6 karakter"

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { WashingMachine, Lock, User, ArrowRight } from 'lucide-react';
+import { WashingMachine, Lock, Mail, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,21 +17,21 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await apiFetch('/api/login', {
+      const res = await apiFetch('/api/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
-      if (data.success) {
-        localStorage.setItem('auth_token', data.data.token);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
+      if (data.status === 'success') {
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('tenant', JSON.stringify(data.data.tenant));
         navigate('/');
       } else {
-        setError(data.message || 'Login gagal');
+        setError(data.message || 'Login gagal. Periksa email dan password Anda.');
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan koneksi ke server');
     } finally {
       setLoading(false);
@@ -60,7 +60,7 @@ export default function Login() {
           Masuk Kelola Laundry
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Sistem Kasir & Manajemen UMKM Laundry Indonesia
+          Sistem Kasir &amp; Manajemen UMKM Laundry Indonesia
         </p>
       </motion.div>
 
@@ -80,18 +80,18 @@ export default function Login() {
           <form className="space-y-5" onSubmit={handleLogin}>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">
-                Username
+                Email
               </label>
               <div className="relative rounded-2xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  <User size={18} />
+                  <Mail size={18} />
                 </div>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Contoh: admin"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="budi@email.com"
                   className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
@@ -114,9 +114,6 @@ export default function Login() {
                   className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
-              <p className="mt-2 text-xs text-slate-400 text-right font-mono">
-                Hint: admin / admin123
-              </p>
             </div>
 
             <button

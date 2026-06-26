@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react';
-import {Users, ShoppingBag, ShoppingCart, TrendingUp, Sparkles,} from 'lucide-react';
+import { Users, ShoppingBag, ShoppingCart, TrendingUp, Sparkles, Clock } from 'lucide-react';
 import { formatRupiah } from '../lib/utils';
-import { ApiResponse } from '../types';
+import { DashboardStats } from '../types';
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
-
-interface DashboardStats {
-  totalCustomers: number;
-  totalOrders: number;
-  pendingOrders: number;
-  totalRevenue: number;
-}
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardStats();
@@ -24,17 +19,25 @@ export default function Dashboard() {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-
       const response = await apiFetch('/api/dashboard');
-      const data: ApiResponse<DashboardStats> = await response.json();
 
-      if (data.success && data.data) {
+      // Handle 401 — token expired or missing
+      if (response.status === 401) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('tenant');
+        navigate('/login');
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.status === 'success' && data.data) {
         setStats(data.data);
       } else {
-        setError(data.message || 'Gagal memuat data');
+        setError(data.message || 'Gagal memuat data dashboard');
       }
     } catch {
-      setError('Terjadi kesalahan jaringan');
+      setError('Terjadi kesalahan jaringan. Periksa koneksi Anda.');
     } finally {
       setLoading(false);
     }
@@ -43,7 +46,7 @@ export default function Dashboard() {
   if (loading)
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
       </div>
     );
 
@@ -75,14 +78,14 @@ export default function Dashboard() {
     },
     {
       title: 'Pesanan Aktif',
-      value: stats.pendingOrders,
-      icon: ShoppingBag,
+      value: stats.pendingOrdersCount,
+      icon: Clock,
       color: 'from-amber-400 to-orange-500',
       shadow: 'shadow-orange-500/20',
       glow: 'bg-orange-100 group-hover:bg-amber-100',
     },
     {
-      title: 'Pendapatan',
+      title: 'Total Pendapatan',
       value: formatRupiah(stats.totalRevenue),
       icon: TrendingUp,
       color: 'from-emerald-400 to-teal-500',
@@ -92,33 +95,20 @@ export default function Dashboard() {
   ];
 
   const container = {
-    hidden: {
-      opacity: 0,
-    },
+    hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.15,
-      },
+      transition: { staggerChildren: 0.1, delayChildren: 0.15 },
     },
   };
 
   const itemAnim = {
-    hidden: {
-      opacity: 0,
-      scale: 0.9,
-      y: 20,
-    },
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
     show: {
       opacity: 1,
       scale: 1,
       y: 0,
-      transition: {
-        type: 'spring',
-        stiffness: 300,
-        damping: 24,
-      },
+      transition: { type: 'spring' as const, stiffness: 300, damping: 24 },
     },
   };
 
@@ -128,11 +118,7 @@ export default function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{
-          type: 'spring',
-          stiffness: 120,
-          damping: 18,
-        }}
+        transition={{ type: 'spring', stiffness: 120, damping: 18 }}
         className="flex flex-col sm:flex-row sm:items-end justify-between gap-6"
       >
         <div>
@@ -140,7 +126,6 @@ export default function Dashboard() {
             Dashboard
             <Sparkles className="h-8 w-8 text-blue-500 animate-bounce" />
           </h1>
-
           <p className="mt-2 text-lg font-medium text-slate-600">
             Ringkasan performa bisnis laundry UMKM hari ini.
           </p>
@@ -156,60 +141,34 @@ export default function Dashboard() {
       >
         {cards.map((card, index) => {
           const Icon = card.icon;
-
           return (
             <motion.div
               key={index}
               variants={itemAnim}
-              whileHover={{
-                y: -6,
-                scale: 1.02,
-              }}
-              whileTap={{
-                scale: 0.98,
-              }}
-              className={`bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 ${card.shadow}
-              flex flex-col justify-between relative overflow-hidden group transition-all duration-300 cursor-pointer`}
+              whileHover={{ y: -6, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 ${card.shadow} flex flex-col justify-between relative overflow-hidden group transition-all duration-300 cursor-pointer`}
             >
               {/* Glow */}
-              <div
-                className={`absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl transition-colors pointer-events-none ${card.glow}`}
-              />
+              <div className={`absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl transition-colors pointer-events-none ${card.glow}`} />
 
               <div className="z-10">
                 <div className="mb-6">
                   <motion.div
-                    whileHover={{
-                      rotate: 8,
-                      scale: 1.08,
-                    }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 300,
-                    }}
-                    className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${card.color}
-                    flex items-center justify-center text-white shadow-lg`}
+                    whileHover={{ rotate: 8, scale: 1.08 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${card.color} flex items-center justify-center text-white shadow-lg`}
                   >
                     <Icon size={28} strokeWidth={2} />
                   </motion.div>
                 </div>
 
-                <p className="text-sm font-semibold text-slate-500 mb-2">
-                  {card.title}
-                </p>
+                <p className="text-sm font-semibold text-slate-500 mb-2">{card.title}</p>
 
                 <motion.h3
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    delay: 0.2 + index * 0.1,
-                  }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
                   className="text-3xl font-extrabold tracking-tight text-slate-900"
                 >
                   {card.value}
