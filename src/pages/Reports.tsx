@@ -214,10 +214,10 @@ export default function Reports() {
                       initial={{ height: 0 }}
                       animate={{ height: `${Math.max(height, 4)}%` }}
                       transition={{ duration: 0.4, delay: i * 0.02 }}
-                      className="w-7 sm:w-8 bg-gradient-to-t from-blue-500 to-indigo-400 dark:from-blue-600 dark:to-indigo-500 rounded-t-md cursor-pointer hover:from-blue-600 transition-all"
+                      className="w-7 sm:w-8 bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t-md cursor-pointer hover:from-blue-600 transition-all"
                       style={{ height: `${Math.max(height, 4)}%` }}
                     />
-                    <span className="text-[7px] text-slate-400 dark:text-slate-500 font-medium mt-1">{dateLabel}</span>
+                    <span className="text-[7px] text-slate-400 font-medium mt-1">{dateLabel}</span>
                   </motion.div>
                 );
               })}

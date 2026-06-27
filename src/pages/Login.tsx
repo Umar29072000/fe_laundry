@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { WashingMachine, Lock, Mail, ArrowRight, Sparkles, Shirt, Wind } from 'lucide-react';
+import { WashingMachine, Lock, Mail, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
 
 const floatingIcons = [
-  { icon: '🧺', x: '10%', y: '15%', delay: 0, size: 40 },
-  { icon: '👕', x: '85%', y: '20%', delay: 0.5, size: 35 },
-  { icon: '🧦', x: '15%', y: '75%', delay: 1, size: 30 },
-  { icon: '✨', x: '80%', y: '70%', delay: 1.5, size: 28 },
-  { icon: '🧴', x: '90%', y: '10%', delay: 2, size: 32 },
+  { icon: '🧺', x: '10%', y: '15%', delay: 0 },
+  { icon: '👕', x: '85%', y: '20%', delay: 0.5 },
+  { icon: '🧦', x: '15%', y: '75%', delay: 1 },
+  { icon: '✨', x: '80%', y: '70%', delay: 1.5 },
+  { icon: '🧴', x: '90%', y: '10%', delay: 2 },
 ];
 
 export default function Login() {
@@ -29,9 +29,7 @@ export default function Login() {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-
       const data = await res.json();
-
       if (data.status === 'success') {
         sessionStorage.setItem('auth_token', data.token);
         sessionStorage.setItem('tenant', JSON.stringify(data.data.tenant));
@@ -47,13 +45,13 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 flex flex-col lg:flex-row relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex flex-col lg:flex-row relative overflow-hidden">
       {/* Floating icons */}
       {floatingIcons.map((item, i) => (
         <motion.div
           key={i}
           className="absolute hidden md:block pointer-events-none z-0"
-          style={{ left: item.x, top: item.y, fontSize: item.size }}
+          style={{ left: item.x, top: item.y, fontSize: 32 }}
           animate={{ y: [0, -15, 0], opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 4, repeat: Infinity, delay: item.delay, ease: 'easeInOut' }}
         >
@@ -90,7 +88,6 @@ export default function Login() {
             ))}
           </div>
         </motion.div>
-        {/* Decorative circles */}
         <div className="absolute top-1/4 -left-20 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
       </div>
@@ -103,17 +100,12 @@ export default function Login() {
           transition={{ duration: 0.6 }}
           className="sm:mx-auto sm:w-full sm:max-w-md"
         >
-          {/* Mobile logo */}
           <div className="lg:hidden text-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-indigo-500/20 text-white mb-4">
               <WashingMachine size={32} />
             </div>
-            <h2 className="text-2xl font-display font-bold text-slate-800 dark:text-white">
-              Masuk Kelola Laundry
-            </h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Sistem Kasir & Manajemen UMKM Laundry Indonesia
-            </p>
+            <h2 className="text-2xl font-display font-bold text-slate-800">Masuk Kelola Laundry</h2>
+            <p className="mt-1 text-sm text-slate-500">Sistem Kasir & Manajemen UMKM Laundry Indonesia</p>
           </div>
         </motion.div>
 
@@ -123,12 +115,12 @@ export default function Login() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-4 sm:mx-auto sm:w-full sm:max-w-md"
         >
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-white/60 dark:border-slate-700/60">
+          <div className="bg-white/90 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-white/60">
             {error && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="mb-6 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-2xl text-sm font-medium"
+                className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-2xl text-sm font-medium"
               >
                 {error}
               </motion.div>
@@ -136,7 +128,7 @@ export default function Login() {
 
             <form className="space-y-5" onSubmit={handleLogin}>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Email</label>
                 <div className="relative rounded-2xl shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                     <Mail size={18} />
@@ -147,13 +139,13 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="budi@email.com"
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-2xl text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Password</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Password</label>
                 <div className="relative rounded-2xl shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                     <Lock size={18} />
@@ -164,7 +156,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-2xl text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -181,12 +173,10 @@ export default function Login() {
               </motion.button>
             </form>
 
-            <div className="mt-8 text-center pt-6 border-t border-slate-100 dark:border-slate-700">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+            <div className="mt-8 text-center pt-6 border-t border-slate-100">
+              <p className="text-sm text-slate-600">
                 Belum mendaftarkan toko Anda?{' '}
-                <Link to="/register" className="font-bold text-blue-600 dark:text-blue-400 hover:text-indigo-600 transition-colors">
-                  Daftar Mitra UMKM
-                </Link>
+                <Link to="/register" className="font-bold text-blue-600 hover:text-indigo-600 transition-colors">Daftar Mitra UMKM</Link>
               </p>
             </div>
           </div>

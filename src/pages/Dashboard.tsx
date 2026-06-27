@@ -13,11 +13,11 @@ import { format } from 'date-fns';
 import SkeletonCard from '../components/Skeleton';
 
 const statusIndo: Record<string, { label: string; color: string; bg: string }> = {
-  Pending: { label: 'Pending', color: 'text-amber-700 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/40' },
-  Washing: { label: 'Dicuci', color: 'text-blue-700 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/40' },
-  Ironing: { label: 'Setrika', color: 'text-purple-700 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-900/40' },
-  Ready: { label: 'Siap Ambil', color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/40' },
-  Delivered: { label: 'Selesai', color: 'text-slate-700 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800/40' },
+  Pending: { label: 'Pending', color: 'text-amber-700', bg: 'bg-amber-100' },
+  Washing: { label: 'Dicuci', color: 'text-blue-700', bg: 'bg-blue-100' },
+  Ironing: { label: 'Setrika', color: 'text-purple-700', bg: 'bg-purple-100' },
+  Ready: { label: 'Siap Ambil', color: 'text-emerald-700', bg: 'bg-emerald-100' },
+  Delivered: { label: 'Selesai', color: 'text-slate-700', bg: 'bg-slate-100' },
 };
 
 const paymentIcons: Record<string, any> = { Tunai: Wallet, QRIS: CreditCard, Transfer_Bank: Landmark };
@@ -48,7 +48,7 @@ export default function Dashboard() {
   };
 
   if (loading) return <SkeletonCard count={4} />;
-  if (error) return <div className="p-6 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-400 font-bold">{error}</div>;
+  if (error) return <div className="p-6 bg-red-50 border border-red-200 rounded-2xl text-red-600 font-bold">{error}</div>;
   if (!stats) return null;
 
   const revenueCards = [
@@ -70,16 +70,14 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 pt-1 pb-10">
-      {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2.5 text-2xl sm:text-3xl font-display font-bold text-slate-800 dark:text-white tracking-tight">
-            Dashboard
-            <Sparkles className="h-6 w-6 text-blue-500" />
+          <h1 className="flex items-center gap-2.5 text-2xl sm:text-3xl font-display font-bold text-slate-800 tracking-tight">
+            Dashboard <Sparkles className="h-6 w-6 text-blue-500" />
           </h1>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Ringkasan bisnis laundry Anda hari ini.</p>
+          <p className="text-sm font-medium text-slate-500">Ringkasan bisnis laundry Anda hari ini.</p>
         </div>
-        <Link to="/reports" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm">
+        <Link to="/reports" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm">
           Lihat Laporan Lengkap <ArrowRight size={14} />
         </Link>
       </motion.div>
@@ -89,21 +87,15 @@ export default function Dashboard() {
         {revenueCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <motion.div
-              key={idx}
-              variants={itemAnim}
-              whileHover={{ y: -3, scale: 1.01 }}
-              className={`bg-white dark:bg-slate-800/90 p-4 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 ${card.shadow} relative overflow-hidden group transition-all`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2.5 rounded-xl bg-gradient-to-br ${card.color} text-white shadow-md`}>
-                    <Icon size={18} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{card.title}</p>
-                    <h3 className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">{card.value}</h3>
-                  </div>
+            <motion.div key={idx} variants={itemAnim} whileHover={{ y: -3, scale: 1.01 }}
+              className={`bg-white p-4 rounded-xl shadow-lg border border-slate-100 ${card.shadow} relative overflow-hidden group transition-all`}>
+              <div className="flex items-center gap-3">
+                <div className={`p-2.5 rounded-xl bg-gradient-to-br ${card.color} text-white shadow-md`}>
+                  <Icon size={18} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{card.title}</p>
+                  <h3 className="text-base font-extrabold text-slate-900 mt-0.5">{card.value}</h3>
                 </div>
               </div>
             </motion.div>
@@ -116,21 +108,15 @@ export default function Dashboard() {
         {summaryCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <motion.div
-              key={idx}
-              variants={itemAnim}
-              whileHover={{ y: -3, scale: 1.01 }}
+            <motion.div key={idx} variants={itemAnim} whileHover={{ y: -3, scale: 1.01 }}
               onClick={() => navigate(card.link)}
-              className={`bg-white dark:bg-slate-800/90 p-4 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 ${card.shadow} flex items-center gap-3 relative overflow-hidden group transition-all cursor-pointer`}
-            >
+              className={`bg-white p-4 rounded-xl shadow-lg border border-slate-100 ${card.shadow} flex items-center gap-3 relative overflow-hidden group transition-all cursor-pointer`}>
               <div className={`p-2.5 rounded-xl bg-gradient-to-br ${card.color} text-white shadow-md shrink-0`}>
                 <Icon size={18} strokeWidth={2.5} />
               </div>
               <div>
-                <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{card.title}</p>
-                <h3 className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
-                  {typeof card.value === 'number' ? card.value : card.value}
-                </h3>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{card.title}</p>
+                <h3 className="text-base font-extrabold text-slate-900 mt-0.5">{typeof card.value === 'number' ? card.value : card.value}</h3>
               </div>
             </motion.div>
           );
@@ -139,16 +125,13 @@ export default function Dashboard() {
 
       {/* Status + Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Status */}
         <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-slate-800/90 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 overflow-hidden"
-        >
-          <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <WashingMachine size={15} className="text-indigo-600 dark:text-indigo-400" />
-              Status Pesanan
+          className="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <WashingMachine size={15} className="text-indigo-600" /> Status Pesanan
             </h2>
-            <Link to="/orders" className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800">Lihat Semua →</Link>
+            <Link to="/orders" className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800">Lihat Semua →</Link>
           </div>
           <div className="p-4 space-y-2.5">
             {(stats.ordersByStatus || []).map((item) => {
@@ -157,32 +140,26 @@ export default function Dashboard() {
               return (
                 <div key={item.status} className="flex items-center gap-2.5">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${meta.color} ${meta.bg} w-16 text-center shrink-0`}>{meta.label}</span>
-                  <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(item.count / maxCount) * 100}%` }}
-                      transition={{ duration: 0.5 }}
+                  <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${(item.count / maxCount) * 100}%` }} transition={{ duration: 0.5 }}
                       className={`h-full rounded-full ${item.status === 'Pending' ? 'bg-amber-400' : item.status === 'Washing' ? 'bg-blue-400' : item.status === 'Ironing' ? 'bg-purple-400' : item.status === 'Ready' ? 'bg-emerald-400' : 'bg-slate-400'}`} />
                   </div>
-                  <span className="text-xs font-bold text-slate-600 dark:text-slate-400 w-6 text-right">{item.count}</span>
+                  <span className="text-xs font-bold text-slate-600 w-6 text-right">{item.count}</span>
                 </div>
               );
             })}
           </div>
         </motion.div>
 
-        {/* Recent Orders */}
         <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-slate-800/90 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 overflow-hidden"
-        >
-          <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <ShoppingCart size={15} className="text-indigo-600 dark:text-indigo-400" />
-              Pesanan Terbaru
+          className="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <ShoppingCart size={15} className="text-indigo-600" /> Pesanan Terbaru
             </h2>
-            <Link to="/orders" className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">Lihat Semua →</Link>
+            <Link to="/orders" className="text-[11px] font-bold text-indigo-600">Lihat Semua →</Link>
           </div>
-          <div className="divide-y divide-slate-50 dark:divide-slate-700/50">
+          <div className="divide-y divide-slate-50">
             {(stats.recentOrders || []).length === 0 ? (
               <div className="p-6 text-center text-slate-400 text-sm">Belum ada pesanan.</div>
             ) : (
@@ -191,17 +168,16 @@ export default function Dashboard() {
                 const statusMeta = statusIndo[order.status] || { label: order.status, color: 'text-slate-600', bg: 'bg-slate-100' };
                 return (
                   <motion.div key={order.id} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 * idx }}
-                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                  >
+                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 transition-colors">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-white">{order.id}</span>
+                        <span className="text-[11px] font-mono font-bold text-slate-800">{order.id}</span>
                         <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${statusMeta.color} ${statusMeta.bg}`}>{statusMeta.label}</span>
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{order.customerName}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{order.customerName}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-xs font-extrabold text-slate-900 dark:text-white">{formatRupiah(order.totalPrice)}</p>
+                      <p className="text-xs font-extrabold text-slate-900">{formatRupiah(order.totalPrice)}</p>
                       <div className="flex items-center gap-1 justify-end mt-0.5">
                         <PaymentIcon size={9} className="text-slate-400" />
                         <span className="text-[9px] text-slate-400">{format(new Date(order.createdAt), 'dd/MM')}</span>
