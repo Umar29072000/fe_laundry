@@ -33,9 +33,30 @@ export default function Reports() {
     try {
       const params = period !== 'all' ? `?period=${period}` : '';
       const res = await apiFetch(`/api/reports${params}`);
-      const data = await res.json();
-      if (data.status === 'success' && data.data?.report) {
-        setReport(data.data.report);
+      const json = await res.json();
+
+      if (json.status === 'success' && json.data?.report) {
+        const raw = json.data.report;
+
+        // Backend lama: mengembalikan array ReportItem[]
+        if (Array.isArray(raw)) {
+          const totalRevenue = raw.reduce((s: number, r: any) => s + (r.totalRevenue || 0), 0);
+          const totalOrders = raw.reduce((s: number, r: any) => s + (r.orderCount || 0), 0);
+          setReport({
+            summary: {
+              totalRevenue,
+              totalOrders,
+              avgOrderValue: totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0,
+            },
+            dailyRevenue: [],
+            ordersByService: [],
+            ordersByStatus: [],
+            paymentBreakdown: raw,
+          });
+        } else {
+          // Backend baru: mengembalikan DetailedReport object
+          setReport(raw);
+        }
       }
     } catch (err) {
       console.error(err);
