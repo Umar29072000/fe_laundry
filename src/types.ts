@@ -82,6 +82,20 @@ export interface DashboardStats {
   totalOrders: number;
   pendingOrdersCount: number;
   totalRevenue: number;
+  todayRevenue: number;
+  weeklyRevenue: number;
+  monthlyRevenue: number;
+  ordersByStatus: StatusCount[];
+  recentOrders: RecentOrder[];
+}
+
+export interface RecentOrder {
+  id: string;
+  customerName: string;
+  totalPrice: number;
+  status: OrderStatus;
+  paymentMethod: PaymentMethod;
+  createdAt: string;
 }
 
 // ============================================================
