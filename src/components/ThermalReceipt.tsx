@@ -7,14 +7,6 @@ interface ThermalReceiptProps {
 }
 
 export default function ThermalReceipt({ order }: ThermalReceiptProps) {
-  const statusIndo: Record<string, string> = {
-    Pending: 'Menunggu Diproses',
-    Washing: 'Sedang Dicuci',
-    Ironing: 'Sedang Disetrika',
-    Ready: 'Siap Diambil',
-    Delivered: 'Selesai',
-  };
-
   const paymentLabel: Record<string, string> = {
     Tunai: 'Tunai',
     QRIS: 'QRIS',
@@ -32,7 +24,6 @@ export default function ThermalReceipt({ order }: ThermalReceiptProps) {
         <p className="receipt-subtitle">Struk Pembayaran Digital</p>
       </div>
 
-      {/* Divider */}
       <div className="receipt-divider" />
 
       {/* Order Info */}
@@ -50,24 +41,11 @@ export default function ThermalReceipt({ order }: ThermalReceiptProps) {
           <span className="receipt-value">{order.customer?.name || '-'}</span>
         </div>
         <div className="receipt-info-row">
-          <span className="receipt-label">Status</span>
-          <span className={`receipt-status status-${order.status.toLowerCase()}`}>
-            {statusIndo[order.status] || order.status}
-          </span>
-        </div>
-        <div className="receipt-info-row">
           <span className="receipt-label">Pembayaran</span>
           <span className="receipt-value">{paymentLabel[order.paymentMethod] || order.paymentMethod}</span>
         </div>
-        {order.customer?.phone && (
-          <div className="receipt-info-row">
-            <span className="receipt-label">No. HP</span>
-            <span className="receipt-value">{order.customer.phone}</span>
-          </div>
-        )}
       </div>
 
-      {/* Divider */}
       <div className="receipt-divider" />
 
       {/* Items Table */}
@@ -86,7 +64,6 @@ export default function ThermalReceipt({ order }: ThermalReceiptProps) {
         ))}
       </div>
 
-      {/* Divider */}
       <div className="receipt-divider" />
 
       {/* Total */}
@@ -95,10 +72,9 @@ export default function ThermalReceipt({ order }: ThermalReceiptProps) {
         <span className="receipt-total-value">{formatRupiah(order.totalPrice)}</span>
       </div>
 
-      {/* Divider */}
       <div className="receipt-divider" />
 
-      {/* Tracking */}
+      {/* Tracking QR */}
       <div className="receipt-tracking">
         <p className="receipt-tracking-title">📍 Lacak Pesanan</p>
         <div className="receipt-qr-wrapper">
@@ -109,7 +85,6 @@ export default function ThermalReceipt({ order }: ThermalReceiptProps) {
             crossOrigin="anonymous"
           />
         </div>
-        <p className="receipt-tracking-url">{trackingUrl}</p>
       </div>
 
       {/* Footer */}
