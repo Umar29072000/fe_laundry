@@ -4,6 +4,7 @@ import { Service } from '../types';
 import { formatRupiah } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch } from '../lib/api';
+import SkeletonCard from '../components/Skeleton';
 
 export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
@@ -130,8 +131,8 @@ export default function Services() {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {loading ? (
-          <div className="col-span-full flex h-64 items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600" />
+          <div className="col-span-full">
+            <SkeletonCard count={3} />
           </div>
         ) : services.length === 0 ? (
           <div className="col-span-full text-center py-16 bg-white border border-slate-200 rounded-[2rem] shadow-sm">

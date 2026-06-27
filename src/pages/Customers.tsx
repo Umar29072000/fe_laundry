@@ -3,6 +3,7 @@ import { Plus, Trash2, Search, Sparkles, X, Mail, Phone, MapPin } from 'lucide-r
 import { Customer } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch } from '../lib/api';
+import { SkeletonTable } from '../components/Skeleton';
 
 export default function Customers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -150,9 +151,9 @@ export default function Customers() {
             <motion.tbody variants={container} initial="hidden" animate="show" className="text-sm text-slate-700">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-12 text-center text-slate-500">
-                    <div className="flex justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+                  <td colSpan={4} className="p-0">
+                    <div className="p-4">
+                      <SkeletonTable rows={4} />
                     </div>
                   </td>
                 </tr>

@@ -5,6 +5,7 @@ import { formatRupiah, cn } from '../lib/utils';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch } from '../lib/api';
+import { SkeletonTable } from '../components/Skeleton';
 
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -218,9 +219,9 @@ export default function Orders() {
             <motion.tbody variants={container} initial="hidden" animate="show" className="text-sm text-slate-700 font-medium">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-16 text-center text-slate-500">
-                    <div className="flex justify-center">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
+                  <td colSpan={6} className="p-0">
+                    <div className="p-4">
+                      <SkeletonTable rows={4} />
                     </div>
                   </td>
                 </tr>

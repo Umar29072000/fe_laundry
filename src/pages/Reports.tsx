@@ -12,6 +12,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, AreaChart, Area,
 } from 'recharts';
+import SkeletonCard, { SkeletonTable } from '../components/Skeleton';
 
 type Period = 'all' | 'week' | 'month' | 'year';
 
@@ -68,10 +69,12 @@ export default function Reports() {
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
+      <div className="space-y-6 pt-2">
+        <SkeletonCard count={4} />
+        <SkeletonTable rows={3} />
       </div>
     );
   }
