@@ -8,6 +8,10 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch } from '../lib/api';
 import { DetailedReport } from '../types';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, AreaChart, Area,
+} from 'recharts';
 
 type Period = 'all' | 'week' | 'month' | 'year';
 
@@ -81,7 +85,6 @@ export default function Reports() {
   }
 
   const { summary, dailyRevenue, ordersByService, ordersByStatus, paymentBreakdown } = report;
-  const maxDailyRev = Math.max(...dailyRevenue.map((d) => d.revenue), 1);
   const maxServiceRev = Math.max(...ordersByService.map((s) => s.revenue), 1);
   const maxStatusCount = Math.max(...ordersByStatus.map((s) => s.count), 1);
 
@@ -193,35 +196,54 @@ export default function Reports() {
           {dailyRevenue.length === 0 ? (
             <p className="text-center text-slate-400 py-8 text-sm">Belum ada data pendapatan di periode ini.</p>
           ) : (
-            <div className="flex items-end gap-1 h-36 overflow-x-auto pb-1">
-              {dailyRevenue.map((day, i) => {
-                const height = (day.revenue / maxDailyRev) * 100;
-                const dateLabel = new Date(day.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-                return (
-                  <motion.div
-                    key={day.date}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.02 }}
-                    className="relative group flex flex-col items-center"
-                  >
-                    {/* Tooltip */}
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap shadow-lg pointer-events-none">
-                      {formatRupiah(day.revenue)}
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45" />
-                    </div>
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: `${Math.max(height, 4)}%` }}
-                      transition={{ duration: 0.4, delay: i * 0.02 }}
-                      className="w-7 sm:w-8 bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t-md cursor-pointer hover:from-blue-600 transition-all"
-                      style={{ height: `${Math.max(height, 4)}%` }}
-                    />
-                    <span className="text-[7px] text-slate-400 font-medium mt-1">{dateLabel}</span>
-                  </motion.div>
-                );
-              })}
-            </div>
+            <ResponsiveContainer width="100%" height={250}>
+              <AreaChart data={dailyRevenue.map(d => ({ ...d, label: new Date(d.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) }))}>
+                <defs>
+                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis
+                  dataKey="label"
+                  tick={{ fontSize: 10, fill: '#94a3b8' }}
+                  axisLine={{ stroke: '#e2e8f0' }}
+                  tickLine={false}
+                  interval="preserveStartEnd"
+                />
+                <YAxis
+                  tick={{ fontSize: 10, fill: '#94a3b8' }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(val) => `Rp${(val / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: '#1e293b',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: '#fff',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    padding: '8px 12px',
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
+                  }}
+                  labelStyle={{ color: '#94a3b8', fontSize: '10px', marginBottom: '4px' }}
+                  formatter={(value: number) => [formatRupiah(value), 'Pendapatan']}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#4f46e5"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorRev)"
+                  dot={{ r: 3, fill: '#4f46e5', stroke: '#fff', strokeWidth: 2 }}
+                  activeDot={{ r: 5, fill: '#4f46e5', stroke: '#fff', strokeWidth: 2 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           )}
         </div>
       </motion.div>
