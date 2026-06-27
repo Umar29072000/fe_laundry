@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://app.liveonline.codes/sitemap.xml
