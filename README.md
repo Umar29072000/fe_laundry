@@ -1,108 +1,180 @@
-# 🧺 LaundryKu — Aplikasi Kasir & Manajemen Laundry Modern
+# 🧺 LaundryKu — Frontend Aplikasi Kasir & Manajemen Laundry Modern
 
 <div align="center">
-  <img src="./assets/laundry_dashboard_banner.png" alt="Laundry-ku Dashboard Banner" width="100%" style="border-radius: 8px; margin-bottom: 20px;" />
 
-  [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
-  [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Recharts](https://img.shields.io/badge/Recharts-FF6C37?style=for-the-badge&logo=recharts&logoColor=white)](https://recharts.org/)
+[![Motion](https://img.shields.io/badge/Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://motion.dev/)
+
 </div>
 
 ---
 
-**Laundry-ku** adalah aplikasi kasir (POS) dan manajemen operasional laundry modern berbasis web. Dirancang khusus untuk membantu pemilik toko laundry (tenant) mengelola data transaksi, pelanggan, katalog jasa laundry, status pengerjaan pakaian secara real-time, hingga visualisasi laporan keuangan harian dan bulanan secara interaktif.
+**LaundryKu** adalah aplikasi kasir (POS) dan manajemen operasional laundry modern berbasis web. Dibangun dengan React + TypeScript + Tailwind CSS, dirancang khusus untuk membantu pemilik toko laundry mengelola bisnis mereka secara efisien.
 
-
----
-
-## ✨ Fitur Utama
-
-- 📊 **Dashboard Interaktif**: Ringkasan data transaksi, status operasional laundry (Pending, Washing, Ironing, Ready, Delivered), grafik pemasukan bulanan, dan total pesanan.
-- 👥 **Manajemen Pelanggan**: Pencatatan data pelanggan meliputi nama, nomor telepon, email, dan alamat.
-- 🛠️ **Manajemen Jasa & Layanan**: Pengelolaan katalog jenis jasa laundry, harga per unit (kg atau pcs), serta satuan pengerjaan.
-- 🛍️ **Transaksi Kasir (Checkout)**:
-  - Pemilihan pelanggan & multi-layanan dalam satu transaksi.
-  - Kalkulasi otomatis total harga dan berat.
-  - Pilihan metode pembayaran modern (Tunai, QRIS, Transfer Bank).
-  - Pengiriman nota tagihan (invoice) otomatis melalui email pelanggan.
-- 📍 **Pelacakan Status Real-time**: Memantau perkembangan pengerjaan pakaian pelanggan langkah-demi-langkah (Pending ➔ Washing ➔ Ironing ➔ Ready ➔ Delivered).
-- 📈 **Laporan Keuangan Terpadu**: Visualisasi laba/pendapatan dalam diagram grafik yang informatif untuk menganalisis perkembangan bisnis.
-- 🔒 **Sistem Otentikasi JWT**: Registrasi toko baru dan login multi-tenant yang aman dengan token JWT.
+🌐 **Live Demo:** [https://app.liveonline.codes](https://app.liveonline.codes)
 
 ---
 
-## 💻 Kecocokan Browser (Browser Compatibility)
+## ✨ Fitur Unggulan
 
-Aplikasi Laundry-ku telah diuji dan berjalan optimal pada browser-browser modern berikut:
+### 📊 Dashboard Interaktif
+- Kartu pendapatan (hari ini, minggu ini, bulan ini, total)
+- Kartu ringkasan interaktif (klik navigasi ke halaman terkait)
+- Grafik status pesanan dengan progress bar animasi
+- Daftar pesanan terbaru dengan metode pembayaran
+
+### 👥 Manajemen Pelanggan
+- Pencatatan data pelanggan (nama, telepon, email, alamat)
+- Pencarian pelanggan real-time
+- Hapus pelanggan
+
+### 🛠️ Manajemen Layanan
+- Kelola paket layanan laundry (nama, harga, satuan)
+- Tampilan grid card yang rapi
+
+### 🛍️ Transaksi Kasir (Pesanan)
+- Buat pesanan baru dengan multi-layanan
+- Kalkulasi otomatis total harga
+- Pilihan metode pembayaran (Tunai, QRIS, Transfer Bank)
+- Update status pesanan (Pending → Washing → Ironing → Ready → Delivered)
+- Cetak struk thermal (58mm/80mm)
+- Kirim struk via WhatsApp
+- Kirim email invoice ke pelanggan
+
+### 📍 Tracking Pesanan Publik
+- Halaman tracking tanpa login untuk pelanggan
+- Progress status real-time dengan animasi
+- Rincian tagihan
+
+### 📈 Laporan Keuangan Detail
+- Filter periode (Semua, 1 Tahun, 1 Bulan, 1 Minggu)
+- Grafik pendapatan harian (AreaChart interaktif dengan tooltip)
+- Breakdown per layanan (bar chart)
+- Distribusi status pesanan
+- Breakdown metode pembayaran
+
+### 🎨 Pengalaman Pengguna Premium
+- **Sidebar collapsible** — minimize/maximize navigasi
+- **Toast notifications** — notifikasi sukses/error snackbar
+- **Skeleton loading** — shimmer animation saat load data
+- **Empty state** — tampilan menarik saat belum ada data
+- **Transisi halaman** — animasi smooth antar halaman
+- **Favicon kustom** — icon mesin cuci gradient
+- **Responsive design** — optimal di desktop & mobile
+
+---
+
+## 💻 Kecocokan Browser
 
 | Google Chrome | Mozilla Firefox | Safari | Microsoft Edge | Opera |
 | :---: | :---: | :---: | :---: | :---: |
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="32"/> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="32"/> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="32"/> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="32"/> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="32"/> |
-| ![Chrome](https://img.shields.io/badge/Chrome-Ready-success?style=flat-square) | ![Firefox](https://img.shields.io/badge/Firefox-Ready-success?style=flat-square) | ![Safari](https://img.shields.io/badge/Safari-Ready-success?style=flat-square) | ![Edge](https://img.shields.io/badge/Edge-Ready-success?style=flat-square) | ![Opera](https://img.shields.io/badge/Opera-Ready-success?style=flat-square) |
+| ✅ Optimal | ✅ Optimal | ✅ Optimal | ✅ Optimal | ✅ Optimal |
 
 ---
 
-## 🛠️ Langkah Instalasi & Set Up Lokal
+## 🛠️ Instalasi Lokal
 
-Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi di komputer lokal Anda:
+### Prasyarat
+- [Node.js](https://nodejs.org/) (v18+)
+- [npm](https://www.npmjs.com/)
 
-### 📋 Prasyarat (Prerequisites)
-Pastikan komputer Anda sudah menginstal:
-- [Node.js](https://nodejs.org/) (versi 18 ke atas direkomendasikan)
-- [npm](https://www.npmjs.com/) (termasuk saat menginstal Node.js)
+### Langkah-langkah
 
-### 🚀 Menjalankan Aplikasi
-
-1. **Clone repositori project ini** ke direktori lokal Anda.
-2. **Masuk ke folder project:**
+1. **Clone repositori**
    ```bash
-   cd fe-laundry
+   git clone https://github.com/Umar29072000/fe_laundry.git
+   cd fe_laundry
    ```
-3. **Instal seluruh dependensi project:**
+
+2. **Install dependensi**
    ```bash
    npm install
    ```
-4. **Buat & Konfigurasi Environment Variables:**
-   Buat sebuah file baru bernama `.env` di root direktori project, lalu isi dengan endpoint backend:
+
+3. **Buat file `.env`**
    ```env
-   VITE_API_URL=[ISI_URL_API_ANDA]
+   VITE_API_URL=https://api-backend-anda.com
    ```
-5. **Jalankan server development lokal:**
+
+4. **Jalankan development server**
    ```bash
    npm run dev
    ```
-6. **Buka browser Anda** dan akses:
-   👉 **[http://localhost:3000](http://localhost:3000)**
+
+5. **Buka browser** → [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 📁 Struktur Direktori Project
+## 📁 Struktur Folder
 
 ```text
 fe-laundry/
-├── assets/                  # Aset gambar & ilustrasi (termasuk banner)
+├── public/
+│   ├── favicon.svg           # Favicon mesin cuci
+│   ├── og-image.png          # Gambar Open Graph (social share)
+│   ├── robots.txt            # Konfigurasi crawler Google
+│   └── sitemap.xml           # Sitemap untuk SEO
 ├── src/
-│   ├── components/          # Komponen UI global (Layout, Navbar, dll)
-│   ├── lib/                 # Konfigurasi utilitas (api.ts, utils.ts)
-│   ├── pages/               # Halaman-halaman utama (Dashboard, Orders, dll)
-│   ├── types.ts             # Definisi tipe TypeScript
-│   ├── main.tsx             # Entry point React
-│   └── vite-env.d.ts        # Deklarasi tipe environment Vite
-├── server.ts                # Server lokal Express untuk melayani Vite & Mock APIs
-├── package.json             # Dependensi dan script build npm
-├── tsconfig.json            # Konfigurasi compiler TypeScript
-└── vite.config.ts           # Konfigurasi bundling Vite
+│   ├── components/
+│   │   ├── Layout.tsx         # Layout utama (sidebar collapsible, dark mode)
+│   │   ├── Toast.tsx          # Notifikasi snackbar global
+│   │   ├── EmptyState.tsx     # Komponen tampilan kosong
+│   │   ├── Skeleton.tsx       # Skeleton loading (card, table, line)
+│   │   └── ThermalReceipt.tsx # Template cetak struk thermal
+│   ├── lib/
+│   │   ├── api.ts             # API fetch helper (with auth)
+│   │   └── utils.ts           # Utility (formatRupiah, cn)
+│   ├── pages/
+│   │   ├── Login.tsx          # Halaman login dengan ilustrasi
+│   │   ├── Register.tsx       # Halaman registrasi
+│   │   ├── Dashboard.tsx      # Dashboard utama interaktif
+│   │   ├── Customers.tsx      # Manajemen pelanggan
+│   │   ├── Services.tsx       # Manajemen layanan
+│   │   ├── Orders.tsx         # Manajemen pesanan
+│   │   ├── Reports.tsx        # Laporan keuangan dengan grafik
+│   │   ├── Receipt.tsx        # Cetak struk / kirim WA
+│   │   ├── TrackOrder.tsx     # Tracking publik untuk pelanggan
+│   │   └── Profile.tsx        # Profil toko & upload foto
+│   ├── types.ts               # Definisi tipe TypeScript
+│   ├── main.tsx               # Entry point React
+│   └── index.css              # Global styles + Tailwind
+├── index.html                 # HTML utama (SEO, OG tags)
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
 ---
 
-## ⚙️ Skrip Perintah (Build & Production)
+## ⚙️ Skrip NPM
 
-Di dalam `package.json`, Anda dapat menggunakan perintah-perintah berikut:
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Jalankan development server (port 5173) |
+| `npm run build` | Build produksi ke folder `dist` |
+| `npm run lint` | Validasi tipe TypeScript |
+| `npm run preview` | Preview hasil build lokal |
 
-- `npm run dev` : Menjalankan server lokal pengembangan di port 3000 dengan hot-reloading.
-- `npm run build` : Mem-bundle aplikasi frontend ke folder `dist` dan me-compile `server.ts` untuk server produksi.
-- `npm run start` : Menjalankan server backend Express versi build produksi untuk menyajikan file-file statik.
-- `npm run lint` : Memvalidasi tipe kode TypeScript di seluruh project secara statis.
+---
+
+## 🚀 Deploy ke Vercel
+
+1. Push repositori ke GitHub
+2. Import project di [Vercel](https://vercel.com)
+3. Set environment variable:
+   - `VITE_API_URL` → URL backend kamu
+4. Deploy! 🎉
+
+---
+
+## 📄 Lisensi
+
+Project ini dikembangkan untuk keperluan UMKM Laundry Indonesia.
+
+---
+
+*Dibuat dengan ❤️ untuk UMKM Laundry Indonesia*
