@@ -414,8 +414,8 @@ export default function Orders() {
                             <input
                               type="number"
                               required
-                              min="0.1"
-                              step="0.1"
+                              min={1}
+                              step={1}
                               placeholder="Qty"
                               value={item.quantity}
                               onChange={(e) => handleItemChange(idx, 'quantity', Number(e.target.value))}
