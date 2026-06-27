@@ -68,6 +68,10 @@ export interface Order {
   completedAt: string | null;
   customer: Customer;
   orderItems: OrderItem[];
+  tenant?: {
+    storeName: string;
+    phone: string;
+  };
 }
 
 // ============================================================

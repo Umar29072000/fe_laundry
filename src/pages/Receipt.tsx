@@ -95,7 +95,9 @@ export default function Receipt() {
         className="bg-white text-slate-900 p-8 rounded-none sm:rounded-2xl shadow-2xl border border-slate-200 w-full max-w-[85mm] font-mono text-sm print:p-0 print:m-0 print:shadow-none print:border-none print:w-full print:max-w-none print:rounded-none relative overflow-hidden"
       >
         <div className="text-center mb-6 border-b-2 border-dashed border-slate-300 pb-5">
-          <h1 className="font-extrabold text-2xl mb-1 tracking-tight text-slate-900">MITRA LAUNDRY</h1>
+          <h1 className="font-extrabold text-2xl mb-1 tracking-tight text-slate-900 uppercase">
+            {order.tenant?.storeName || 'MITRA LAUNDRY'}
+          </h1>
           <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Digital Struk UMKM</p>
         </div>
 
