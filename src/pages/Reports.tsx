@@ -193,23 +193,32 @@ export default function Reports() {
           {dailyRevenue.length === 0 ? (
             <p className="text-center text-slate-400 py-8 text-sm">Belum ada data pendapatan di periode ini.</p>
           ) : (
-            <div className="flex items-end gap-1.5 h-40 overflow-x-auto pb-2">
-              {dailyRevenue.map((day) => {
+            <div className="flex items-end gap-1 h-36 overflow-x-auto pb-1">
+              {dailyRevenue.map((day, i) => {
                 const height = (day.revenue / maxDailyRev) * 100;
                 const dateLabel = new Date(day.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
                 return (
-                  <div key={day.date} className="flex flex-col items-center gap-1 min-w-[32px]">
-                    <span className="text-[9px] font-bold text-slate-500">{formatRupiah(day.revenue)}</span>
+                  <motion.div
+                    key={day.date}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.02 }}
+                    className="relative group flex flex-col items-center"
+                  >
+                    {/* Tooltip */}
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap shadow-lg pointer-events-none">
+                      {formatRupiah(day.revenue)}
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45" />
+                    </div>
                     <motion.div
                       initial={{ height: 0 }}
                       animate={{ height: `${Math.max(height, 4)}%` }}
-                      transition={{ duration: 0.5, ease: 'easeOut' }}
-                      className="w-full max-w-[32px] bg-gradient-to-t from-blue-500 to-indigo-400 rounded-t-md hover:from-blue-600 transition-all cursor-pointer"
+                      transition={{ duration: 0.4, delay: i * 0.02 }}
+                      className="w-7 sm:w-8 bg-gradient-to-t from-blue-500 to-indigo-400 dark:from-blue-600 dark:to-indigo-500 rounded-t-md cursor-pointer hover:from-blue-600 transition-all"
                       style={{ height: `${Math.max(height, 4)}%` }}
-                      title={`${dateLabel}: ${formatRupiah(day.revenue)}`}
                     />
-                    <span className="text-[8px] text-slate-400 font-medium whitespace-nowrap">{dateLabel}</span>
-                  </div>
+                    <span className="text-[7px] text-slate-400 dark:text-slate-500 font-medium mt-1">{dateLabel}</span>
+                  </motion.div>
                 );
               })}
             </div>
