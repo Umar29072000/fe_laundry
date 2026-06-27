@@ -3,7 +3,7 @@ import { formatRupiah } from '../lib/utils';
 import {
   Wallet, CreditCard, Landmark, TrendingUp, BarChart2,
   Sparkles, DollarSign, ShoppingCart, Users, Calendar,
-  ArrowUp, ArrowDown,
+  ArrowUp, ArrowDown, Download,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch } from '../lib/api';
@@ -41,6 +41,29 @@ export default function Reports() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      const params = period !== 'all' ? `?period=${period}` : '';
+      const res = await apiFetch(`/api/reports/export${params}`);
+      if (!res.ok) {
+        alert('Gagal mengunduh laporan.');
+        return;
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `laporan-keuangan-${period || 'semua'}-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengunduh laporan.');
     }
   };
 
@@ -95,21 +118,29 @@ export default function Reports() {
           </p>
         </div>
 
-        {/* Period Filter */}
-        <div className="flex bg-white rounded-2xl border border-slate-200 p-1 shadow-sm">
-          {periods.map((p) => (
-            <button
-              key={p.key}
-              onClick={() => setPeriod(p.key)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                period === p.key
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+        {/* Period Filter & Export */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div className="flex bg-white rounded-2xl border border-slate-200 p-1 shadow-sm">
+            {periods.map((p) => (
+              <button
+                key={p.key}
+                onClick={() => setPeriod(p.key)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  period === p.key
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={handleExportExcel}
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-xs hover:bg-emerald-700 transition-all shadow-md cursor-pointer"
+          >
+            <Download size={15} /> Export Excel
+          </button>
         </div>
       </motion.div>
 
