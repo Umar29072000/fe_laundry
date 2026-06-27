@@ -85,10 +85,40 @@ export interface DashboardStats {
 }
 
 // ============================================================
-// Report
+// Financial Report (detailed)
 // ============================================================
 export interface ReportItem {
   paymentMethod: PaymentMethod;
   totalRevenue: number;
   orderCount: number;
+}
+
+export interface DailyRevenue {
+  date: string;
+  revenue: number;
+}
+
+export interface ServiceRevenue {
+  name: string;
+  quantity: number;
+  revenue: number;
+}
+
+export interface StatusCount {
+  status: string;
+  count: number;
+}
+
+export interface ReportSummary {
+  totalRevenue: number;
+  totalOrders: number;
+  avgOrderValue: number;
+}
+
+export interface DetailedReport {
+  summary: ReportSummary;
+  dailyRevenue: DailyRevenue[];
+  ordersByService: ServiceRevenue[];
+  ordersByStatus: StatusCount[];
+  paymentBreakdown: ReportItem[];
 }
