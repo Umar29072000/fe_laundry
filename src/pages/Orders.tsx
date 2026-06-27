@@ -336,7 +336,7 @@ export default function Orders() {
                 </motion.div>
               )}
 
-              <form className="flex-1 overflow-y-auto pr-2 space-y-6 custom-scrollbar">
+              <form id="order-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-2 py-1 space-y-6 custom-scrollbar">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Pilih Pelanggan</label>
@@ -454,8 +454,8 @@ export default function Orders() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  type="button"
-                  onClick={handleSubmit}
+                  type="submit"
+                  form="order-form"
                   disabled={submitLoading}
                   className="px-6 py-3.5 text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl font-bold hover:opacity-95 disabled:opacity-50 transition-all shadow-lg shadow-blue-500/25 cursor-pointer"
                 >
